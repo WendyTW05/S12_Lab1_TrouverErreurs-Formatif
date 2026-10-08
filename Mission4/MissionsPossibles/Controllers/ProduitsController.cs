@@ -49,8 +49,14 @@ namespace Mission.Controllers
         // GET: Produits/Create
         public IActionResult Create()
         {
-         
-            return View();
+
+            Produit_VM produit_VM = new Produit_VM();
+            produit_VM.CategorieList = _context.Categories.OrderBy(c => c.Titre).Select(i => new SelectListItem
+            {
+                Text = i.Titre,
+                Value = i.Id.ToString()
+            });
+            return View(produit_VM);
         }
 
         // POST: Produits/Create
@@ -58,16 +64,16 @@ namespace Mission.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Produit produit)
+        public async Task<IActionResult> Create(Produit_VM produit_VM)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(produit);
+                _context.Produits.Add(produit_VM.Produit);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-           
-            return View(produit);
+
+            return View(produit_VM);
         }
 
         // GET: Produits/Edit/5
